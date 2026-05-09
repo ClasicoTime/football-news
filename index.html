@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>فوتبال‌نیوز | اخبار بارسا، رئال و جهان</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%231e3c72' stroke='%239c2e2e' stroke-width='4'/%3E%3Cpolygon points='50,20 60,40 80,40 65,55 70,75 50,65 30,75 35,55 20,40 40,40' fill='%23ffffff'/%3E%3C/svg%3E">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Tahoma', 'Segoe UI', sans-serif; background: #f0f2f5; direction: rtl; color: #1a1a2e; }
+        header { background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); color: white; padding: 20px; text-align: center; }
+        header h1 { font-size: 28px; }
+        .login-bar { background: #fff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; border-bottom: 2px solid #ddd; }
+        .login-form { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        .login-form input { padding: 6px 12px; border: 1px solid #ccc; border-radius: 20px; }
+        .login-form button { background: #1e3c72; color: white; border: none; padding: 6px 16px; border-radius: 20px; cursor: pointer; }
+        .user-status { font-weight: bold; }
+        .user-status.admin { color: green; }
+        .user-status.guest { color: orange; }
+        .welcome-msg { background: #e7f3ff; padding: 5px 10px; border-radius: 20px; font-size: 13px; }
+        .team-tabs { display: flex; justify-content: center; gap: 15px; margin: 20px 10px; flex-wrap: wrap; }
+        .tab-btn { padding: 8px 20px; font-size: 16px; font-weight: bold; border: none; border-radius: 40px; cursor: pointer; background: #ddd; transition: 0.3s; }
+        .tab-btn.active { color: white; }
+        .tab-btn[data-team="barca"].active { background: #004d98; }
+        .tab-btn[data-team="real"].active { background: #9c2e2e; }
+        .tab-btn[data-team="world"].active { background: #2e7d32; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px 40px; }
+        .quiz-card { background: linear-gradient(135deg, #fff, #f9f1e0); border-radius: 24px; padding: 20px; margin: 20px 0; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-right: 8px solid #ff9800; }
+        .quiz-question { font-size: 20px; font-weight: bold; margin-bottom: 10px; color: #e67e22; }
+        .quiz-option { margin: 12px 0; display: flex; align-items: center; gap: 10px; }
+        .quiz-option input { width: 18px; height: 18px; cursor: pointer; }
+        .quiz-btn { background: #ff9800; color: white; border: none; padding: 8px 20px; border-radius: 30px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        .quiz-feedback { margin-top: 10px; font-weight: bold; }
+        .quiz-stats { background: #eee; padding: 10px; border-radius: 16px; margin-top: 15px; font-size: 14px; }
+        .admin-quiz-panel { background: #f0f0f0; padding: 15px; border-radius: 20px; margin: 15px 0; }
+        .current-quiz-box { background: #fff; padding: 12px; border-radius: 16px; margin-bottom: 15px; border-right: 4px solid #ff9800; }
+        .btn-quiz-edit, .btn-quiz-delete { border: none; padding: 5px 12px; border-radius: 20px; cursor: pointer; font-size: 12px; margin-left: 5px; }
+        .btn-quiz-edit { background: #f39c12; color: white; }
+        .btn-quiz-delete { background: #c0392b; color: white; }
+        .responses-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+        .responses-table th, .responses-table td { border: 1px solid #ddd; padding: 6px; text-align: right; }
+        .responses-table th { background: #ff9800; color: white; }
+        .news-list { display: flex; flex-direction: column; gap: 16px; margin-top: 20px; }
+        .news-summary-card { background: white; border-radius: 16px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-right: 6px solid; transition: 0.2s; }
+        .news-summary-card.barca { border-right-color: #004d98; }
+        .news-summary-card.real { border-right-color: #9c2e2e; }
+        .news-summary-card.world { border-right-color: #2e7d32; }
+        .news-title { font-size: 20px; font-weight: bold; margin-bottom: 8px; }
+        .news-summary-text { font-size: 14px; color: #555; margin-bottom: 12px; line-height: 1.4; }
+        .news-meta { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: gray; flex-wrap: wrap; gap: 8px; }
+        .btn-detail, .btn-delete, .btn-edit { border: none; padding: 6px 14px; border-radius: 20px; cursor: pointer; font-size: 12px; }
+        .btn-detail { background: #1e3c72; color: white; }
+        .btn-edit { background: #f39c12; color: white; }
+        .btn-delete { background: #c0392b; color: white; }
+        .admin-panel { background: white; border-radius: 24px; padding: 20px; margin: 30px 0; box-shadow: 0 4px 12px rgba(0,0,0,0.1); display: none; }
+        .admin-panel h3 { margin-bottom: 15px; color: #1e3c72; }
+        input, textarea, select { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 16px; font-family: inherit; }
+        .file-input { padding: 8px; background: #f9f9f9; }
+        button.submit-news { background: #1e3c72; color: white; border: none; padding: 10px; border-radius: 30px; cursor: pointer; width: 100%; font-weight: bold; }
+        .detail-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; z-index: 1000; visibility: hidden; }
+        .detail-card { background: white; max-width: 700px; width: 90%; max-height: 90%; overflow-y: auto; border-radius: 28px; padding: 24px; position: relative; }
+        .detail-card img { max-width: 100%; border-radius: 20px; margin: 15px 0; }
+        .close-detail { position: absolute; top: 15px; left: 20px; background: red; color: white; border: none; font-size: 20px; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; }
+        .login-message { text-align: center; background: white; padding: 40px; border-radius: 28px; margin-top: 50px; font-size: 18px; color: #555; }
+        footer { text-align: center; padding: 20px; font-size: 14px; color: gray; background: #fff; margin-top: 30px; border-radius: 20px; }
+        footer a { color: #1e3c72; text-decoration: none; font-weight: bold; }
+        .promo { background: #e7f0ff; padding: 8px; border-radius: 30px; display: inline-block; margin-top: 8px; }
+        @media (max-width: 600px) { .news-title { font-size: 18px; } .tab-btn { padding: 5px 12px; font-size: 13px; } }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>⚽ فوتبال‌نیوز | FußballNews</h1>
+    <p>اخبار لحظه‌ای بارسلونا، رئال مادرید و فوتبال جهان</p>
+</header>
+
+<div class="login-bar">
+    <div class="login-form">
+        <input type="password" id="loginPass" placeholder="رمز ورود">
+        <button onclick="login()">ورود</button>
+        <button onclick="logout()">خروج</button>
+    </div>
+    <div id="userStatus" class="user-status guest">👤 مهمان (فقط مشاهده)</div>
+    <div id="welcomeMsg" class="welcome-msg"></div>
+</div>
+
+<div class="team-tabs" id="teamTabs" style="display: none;">
+    <button class="tab-btn active" data-team="barca">🔵🔴 بارسلونا</button>
+    <button class="tab-btn" data-team="real">⚪ رئال مادرید</button>
+    <button class="tab-btn" data-team="world">🌍 فوتبال جهان</button>
+</div>
+
+<div class="container">
+    <div id="newsContainer">
+        <div class="login-message" id="loginMsg">
+            🔐 برای مشاهده اخبار، لطفاً وارد شوید.<br>
+            <strong style="color:#1e3c72;">رمز ورود در کانال اعلام شده است.</strong>
+        </div>
+        <div id="quizContainer" style="display: none;"></div>
+        <div id="newsList" class="news-list" style="display: none;"></div>
+    </div>
+
+    <div id="adminPanel" class="admin-panel">
+        <h3>➕ افزودن خبر جدید</h3>
+        <input type="text" id="newsTitle" placeholder="عنوان خبر">
+        <input type="text" id="newsSummary" placeholder="متن کوتاه (چکیده) ...">
+        <textarea id="newsFullText" rows="4" placeholder="متن کامل خبر ..."></textarea>
+        <label>📸 انتخاب عکس از دستگاه (اختیاری):</label>
+        <input type="file" id="newsImageFile" accept="image/*" class="file-input">
+        <div id="imagePreview" style="margin-top: 5px; font-size: 12px; color: gray;"></div>
+        <select id="newsTeam">
+            <option value="barca">بارسلونا</option>
+            <option value="real">رئال مادرید</option>
+            <option value="world">فوتبال جهان</option>
+        </select>
+        <input type="text" id="newsDate" placeholder="تاریخ (مثال: ۱۰ می ۲۰۲۶)">
+        <button class="submit-news" onclick="addNews()">ثبت خبر</button>
+
+        <hr style="margin: 20px 0;">
+        <h3>📝 مدیریت سوال روز (Quiz)</h3>
+        <div class="admin-quiz-panel">
+            <div id="currentQuizInfo" class="current-quiz-box">در حال بارگذاری...</div>
+            <input type="text" id="quizQuestion" placeholder="متن سوال روز">
+            <input type="text" id="quizOption1" placeholder="گزینه ۱">
+            <input type="text" id="quizOption2" placeholder="گزینه ۲">
+            <input type="text" id="quizOption3" placeholder="گزینه ۳">
+            <input type="text" id="quizOption4" placeholder="گزینه ۴">
+            <select id="quizCorrect">
+                <option value="0">گزینه صحیح (شماره) - انتخاب کنید</option>
+                <option value="0">گزینه ۱</option>
+                <option value="1">گزینه ۲</option>
+                <option value="2">گزینه ۳</option>
+                <option value="3">گزینه ۴</option>
+            </select>
+            <button class="submit-news" onclick="saveQuiz()">ثبت سوال جدید</button>
+            <div id="quizStatsAdmin" style="margin-top: 10px; font-size: 13px; background:#fff; padding: 8px; border-radius: 12px;"></div>
+            <div id="responsesListAdmin" style="margin-top: 15px; max-height: 300px; overflow-y: auto;"></div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div>
+        <a href="https://t.me/ClasicoTime" target="_blank">@ClasicoTime</a>
+        <span class="promo">🎯 کانال رسمی اخبار بارسا و رئال</span>
+    </div>
+    <div style="margin-top: 8px;">📢 برای اطلاع از آخرین رکوردها، نقل و انتقالات و تحلیل‌های داغ، به کانال ما بپیوندید!</div>
+    <div style="margin-top: 15px;">© 2026 فوتبال‌نیوز | طراحی ویژه برای کانال هواداری</div>
+</footer>
+
+<div id="detailModal" class="detail-overlay">
+    <div class="detail-card">
+        <button class="close-detail" onclick="closeDetail()">✖</button>
+        <h2 id="detailTitle"></h2>
+        <div id="detailDate" style="color:gray; margin:5px 0"></div>
+        <img id="detailImage" src="" alt="تصویر خبر">
+        <p id="detailFullText" style="margin-top:15px; line-height:1.6"></p>
+    </div>
+</div>
+
+<script>
+    let newsData = [
+        { id: 1, title: "لامین یامال در ۱۸ سالگی به ۱۰۰ بازی رسید", summary: "ستاره جوان بارسلونا رکورد مسی و رونالدو را شکست.", fullText: "لامین یامال با درخشش در ال کلاسیکو به صد بازی رسمی برای بارسلونا دست یافت. او جوان‌ترین بازیکنی است که به این رکورد می‌رسد.", image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400' viewBox='0 0 600 400'%3E%3Crect width='600' height='400' fill='%23004d98'/%3E%3Ctext x='50%25' y='50%25' font-size='24' fill='white' text-anchor='middle' dy='.3em'%3EYamal 100%3C/text%3E%3C/svg%3E", team: "barca", date: "۶ می ۲۰۲۶" },
+        { id: 2, title: "طومار فروش امباپه در رئال مادرید", summary: "بیش از ۴ میلیون هوادار خواهان فروش ستاره فرانسوی شدند.", fullText: "رئال مادرید با بحران هواداری مواجه است. هواداران خواهان فروش امباپه هستند.", image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400' viewBox='0 0 600 400'%3E%3Crect width='600' height='400' fill='%239c2e2e'/%3E%3Ctext x='50%25' y='50%25' font-size='24' fill='white' text-anchor='middle' dy='.3em'%3EMbappe Sale%3C/text%3E%3C/svg%3E", team: "real", date: "۶ می ۲۰۲۶" },
+        { id: 3, title: "رکوردشکنی هالند در لیگ قهرمانان", summary: "ارلینگ هالند بهترین گلزن تاریخ لیگ قهرمانان شد.", fullText: "هالند با هت تریک به رکورد ۹۲ گل رسید.", image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400' viewBox='0 0 600 400'%3E%3Crect width='600' height='400' fill='%232e7d32'/%3E%3Ctext x='50%25' y='50%25' font-size='24' fill='white' text-anchor='middle' dy='.3em'%3EHaaland Record%3C/text%3E%3C/svg%3E", team: "world", date: "۵ می ۲۰۲۶" }
+    ];
+
+    let currentQuiz = null;
+    let quizResponses = {};
+    const QUIZ_STORAGE = "football_quiz";
+    const QUIZ_RESPONSES_STORAGE = "quiz_responses";
+    const USER_NAME_KEY = "football_user_name";
+    const USER_ID_KEY = "football_user_id";
+
+    function getUserName() { let name = localStorage.getItem(USER_NAME_KEY); if (!name) { name = prompt("👋 خوش آمدید! لطفاً نام خود را وارد کنید:", "کاربر مهمان"); if (name && name.trim() !== "") { localStorage.setItem(USER_NAME_KEY, name.trim()); return name.trim(); } else { localStorage.setItem(USER_NAME_KEY, "مهمان"); return "مهمان"; } } return name; }
+    function getUserId() { let userId = localStorage.getItem(USER_ID_KEY); if (!userId) { userId = "user_" + Date.now() + "_" + Math.random().toString(36); localStorage.setItem(USER_ID_KEY, userId); } return userId; }
+    function updateWelcomeMessage() { const msgDiv = document.getElementById("welcomeMsg"); if (isLoggedIn && currentUser !== "admin") { const name = getUserName(); msgDiv.innerHTML = `👋 سلام ${name}، به فوتبال‌نیوز خوش آمدی!`; msgDiv.style.display = "block"; } else if (isLoggedIn && currentUser === "admin") { msgDiv.innerHTML = `👑 سلام مدیر، خوش آمدید!`; msgDiv.style.display = "block"; } else { msgDiv.style.display = "none"; } }
+
+    function loadQuiz() { const stored = localStorage.getItem(QUIZ_STORAGE); if (stored) { try { currentQuiz = JSON.parse(stored); const now = Date.now(); if (currentQuiz.expiryTimestamp && now > currentQuiz.expiryTimestamp) { currentQuiz = null; localStorage.removeItem(QUIZ_STORAGE); localStorage.removeItem(QUIZ_RESPONSES_STORAGE); quizResponses = {}; } else { const respStored = localStorage.getItem(QUIZ_RESPONSES_STORAGE); if (respStored) quizResponses = JSON.parse(respStored); else quizResponses = {}; } } catch(e) { currentQuiz = null; } } else { currentQuiz = null; quizResponses = {}; } }
+    function saveQuizToLocal() { if (currentQuiz) { localStorage.setItem(QUIZ_STORAGE, JSON.stringify(currentQuiz)); localStorage.setItem(QUIZ_RESPONSES_STORAGE, JSON.stringify(quizResponses)); } else { localStorage.removeItem(QUIZ_STORAGE); localStorage.removeItem(QUIZ_RESPONSES_STORAGE); } }
+    function updateAdminQuizPanel() { const container = document.getElementById("currentQuizInfo"); if (!container) return; if (!currentQuiz) { container.innerHTML = "📭 هیچ سوال فعالی وجود ندارد. با فرم زیر سوال جدید ثبت کنید."; document.getElementById("responsesListAdmin").innerHTML = ""; return; } let html = `<div style="margin-bottom:8px;"><strong>سوال فعال فعلی:</strong> ${currentQuiz.question}</div><div><strong>گزینه‌ها:</strong> ${currentQuiz.options.join(" - ")}</div><div><strong>پاسخ صحیح:</strong> گزینه ${currentQuiz.correct+1} (${currentQuiz.options[currentQuiz.correct]})</div><div style="margin-top:8px;"><button class="btn-quiz-edit" onclick="editCurrentQuiz()">✏️ ویرایش این سوال</button> <button class="btn-quiz-delete" onclick="deleteCurrentQuiz()">🗑 حذف این سوال</button></div>`; container.innerHTML = html; const responsesDiv = document.getElementById("responsesListAdmin"); if (!responsesDiv) return; const responseEntries = Object.entries(quizResponses); if (responseEntries.length === 0) { responsesDiv.innerHTML = "<p>هنوز هیچ کاربری به این سوال پاسخ نداده است.</p>"; return; } let tableHtml = `<table class="responses-table"><tr><th>نام کاربر</th><th>پاسخ انتخاب شده</th><th>نتیجه</th><th>زمان</th></tr>`; for (const [uid, data] of responseEntries) { const userName = data.name || "ناشناس"; const answerIdx = data.answer; const isCorrect = (answerIdx === currentQuiz.correct); const resultText = isCorrect ? "✅ صحیح" : "❌ غلط"; const answerText = currentQuiz.options[answerIdx] || "نامشخص"; const time = data.timestamp ? new Date(data.timestamp).toLocaleTimeString('fa-IR') : "-"; tableHtml += `<tr><td>${escapeHtml(userName)}</td><td>${escapeHtml(answerText)}</td><td>${resultText}</td><td>${time}</td></tr>`; } tableHtml += `</table>`; responsesDiv.innerHTML = tableHtml; }
+    function escapeHtml(str) { return str.replace(/[&<>]/g, function(m){ if(m === '&') return '&amp;'; if(m === '<') return '&lt;'; if(m === '>') return '&gt;'; return m;}); }
+    function editCurrentQuiz() { if (!currentQuiz) { alert("هیچ سوال فعالی برای ویرایش وجود ندارد."); return; } document.getElementById("quizQuestion").value = currentQuiz.question; if (currentQuiz.options.length >= 4) { document.getElementById("quizOption1").value = currentQuiz.options[0]; document.getElementById("quizOption2").value = currentQuiz.options[1]; document.getElementById("quizOption3").value = currentQuiz.options[2]; document.getElementById("quizOption4").value = currentQuiz.options[3]; } document.getElementById("quizCorrect").value = currentQuiz.correct; const saveBtn = document.querySelector(".admin-quiz-panel .submit-news"); saveBtn.innerText = "✏️ به‌روزرسانی سوال"; saveBtn.setAttribute("onclick", "updateCurrentQuiz()"); alert("اکنون می‌توانید تغییرات را اعمال کرده و روی «به‌روزرسانی سوال» کلیک کنید."); }
+    function updateCurrentQuiz() { if (currentUser !== "admin") { alert("فقط مدیر می‌تواند سوال را ویرایش کند."); return; } const qText = document.getElementById("quizQuestion").value.trim(); const opt1 = document.getElementById("quizOption1").value.trim(); const opt2 = document.getElementById("quizOption2").value.trim(); const opt3 = document.getElementById("quizOption3").value.trim(); const opt4 = document.getElementById("quizOption4").value.trim(); const correctIdx = parseInt(document.getElementById("quizCorrect").value); if (!qText || !opt1 || !opt2 || !opt3 || !opt4 || isNaN(correctIdx)) { alert("لطفاً سوال، چهار گزینه و گزینه صحیح را پر کنید."); return; } const expiryTimestamp = Date.now() + (24 * 60 * 60 * 1000); currentQuiz = { question: qText, options: [opt1, opt2, opt3, opt4], correct: correctIdx, expiryTimestamp: expiryTimestamp, createdAt: Date.now() }; quizResponses = {}; saveQuizToLocal(); alert("سوال با موفقیت به‌روزرسانی شد. زمان انقضا تمدید شد و پاسخ‌های قبلی پاک گردید."); resetQuizForm(); if (isLoggedIn) renderQuiz(); updateAdminQuizPanel(); updateAdminQuizStats(); }
+    function deleteCurrentQuiz() { if (currentUser !== "admin") { alert("فقط مدیر می‌تواند سوال را حذف کند."); return; } if (!currentQuiz) { alert("هیچ سوال فعالی برای حذف وجود ندارد."); return; } if (confirm("آیا از حذف سوال روز جاری اطمینان دارید؟ پاسخ‌های کاربران نیز پاک خواهند شد.")) { currentQuiz = null; quizResponses = {}; saveQuizToLocal(); alert("سوال روز حذف شد."); resetQuizForm(); if (isLoggedIn) renderQuiz(); updateAdminQuizPanel(); updateAdminQuizStats(); } }
+    function resetQuizForm() { document.getElementById("quizQuestion").value = ""; document.getElementById("quizOption1").value = ""; document.getElementById("quizOption2").value = ""; document.getElementById("quizOption3").value = ""; document.getElementById("quizOption4").value = ""; document.getElementById("quizCorrect").value = "0"; const saveBtn = document.querySelector(".admin-quiz-panel .submit-news"); saveBtn.innerText = "ثبت سوال جدید"; saveBtn.setAttribute("onclick", "saveQuiz()"); }
+    function saveQuiz() { if (currentUser !== "admin") { alert("فقط مدیر می‌تواند سوال روز را ثبت کند."); return; } const qText = document.getElementById("quizQuestion").value.trim(); const opt1 = document.getElementById("quizOption1").value.trim(); const opt2 = document.getEl
