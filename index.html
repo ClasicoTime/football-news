@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>فوتبال‌نیوز | اخبار بارسا، رئال و جهان</title>
+    <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%231e3c72' stroke='%239c2e2e' stroke-width='4'/%3E%3Cpolygon points='50,20 60,40 80,40 65,55 70,75 50,65 30,75 35,55 20,40 40,40' fill='%23ffffff'/%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%231e3c72' stroke='%239c2e2e' stroke-width='4'/%3E%3Cpolygon points='50,20 60,40 80,40 65,55 70,75 50,65 30,75 35,55 20,40 40,40' fill='%23ffffff'/%3E%3C/svg%3E">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Tahoma', 'Segoe UI', sans-serif; background: #f0f2f5; direction: rtl; color: #1a1a2e; }
@@ -160,12 +162,14 @@
 </div>
 
 <script>
+    // -------------------- داده‌های اولیه اخبار --------------------
     let newsData = [
         { id: 1, title: "لامین یامال در ۱۸ سالگی به ۱۰۰ بازی رسید", summary: "ستاره جوان بارسلونا رکورد مسی و رونالدو را شکست.", fullText: "لامین یامال با درخشش در ال کلاسیکو به صد بازی رسمی برای بارسلونا دست یافت. او جوان‌ترین بازیکنی است که به این رکورد می‌رسد.", image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400' viewBox='0 0 600 400'%3E%3Crect width='600' height='400' fill='%23004d98'/%3E%3Ctext x='50%25' y='50%25' font-size='24' fill='white' text-anchor='middle' dy='.3em'%3EYamal 100%3C/text%3E%3C/svg%3E", team: "barca", date: "۶ می ۲۰۲۶" },
         { id: 2, title: "طومار فروش امباپه در رئال مادرید", summary: "بیش از ۴ میلیون هوادار خواهان فروش ستاره فرانسوی شدند.", fullText: "رئال مادرید با بحران هواداری مواجه است. هواداران خواهان فروش امباپه هستند.", image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400' viewBox='0 0 600 400'%3E%3Crect width='600' height='400' fill='%239c2e2e'/%3E%3Ctext x='50%25' y='50%25' font-size='24' fill='white' text-anchor='middle' dy='.3em'%3EMbappe Sale%3C/text%3E%3C/svg%3E", team: "real", date: "۶ می ۲۰۲۶" },
         { id: 3, title: "رکوردشکنی هالند در لیگ قهرمانان", summary: "ارلینگ هالند بهترین گلزن تاریخ لیگ قهرمانان شد.", fullText: "هالند با هت تریک به رکورد ۹۲ گل رسید.", image: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400' viewBox='0 0 600 400'%3E%3Crect width='600' height='400' fill='%232e7d32'/%3E%3Ctext x='50%25' y='50%25' font-size='24' fill='white' text-anchor='middle' dy='.3em'%3EHaaland Record%3C/text%3E%3C/svg%3E", team: "world", date: "۵ می ۲۰۲۶" }
     ];
 
+    // -------------------- سیستم سوال روز (Quiz) --------------------
     let currentQuiz = null;
     let quizResponses = {};
     const QUIZ_STORAGE = "football_quiz";
@@ -179,10 +183,101 @@
 
     function loadQuiz() { const stored = localStorage.getItem(QUIZ_STORAGE); if (stored) { try { currentQuiz = JSON.parse(stored); const now = Date.now(); if (currentQuiz.expiryTimestamp && now > currentQuiz.expiryTimestamp) { currentQuiz = null; localStorage.removeItem(QUIZ_STORAGE); localStorage.removeItem(QUIZ_RESPONSES_STORAGE); quizResponses = {}; } else { const respStored = localStorage.getItem(QUIZ_RESPONSES_STORAGE); if (respStored) quizResponses = JSON.parse(respStored); else quizResponses = {}; } } catch(e) { currentQuiz = null; } } else { currentQuiz = null; quizResponses = {}; } }
     function saveQuizToLocal() { if (currentQuiz) { localStorage.setItem(QUIZ_STORAGE, JSON.stringify(currentQuiz)); localStorage.setItem(QUIZ_RESPONSES_STORAGE, JSON.stringify(quizResponses)); } else { localStorage.removeItem(QUIZ_STORAGE); localStorage.removeItem(QUIZ_RESPONSES_STORAGE); } }
-    function updateAdminQuizPanel() { const container = document.getElementById("currentQuizInfo"); if (!container) return; if (!currentQuiz) { container.innerHTML = "📭 هیچ سوال فعالی وجود ندارد. با فرم زیر سوال جدید ثبت کنید."; document.getElementById("responsesListAdmin").innerHTML = ""; return; } let html = `<div style="margin-bottom:8px;"><strong>سوال فعال فعلی:</strong> ${currentQuiz.question}</div><div><strong>گزینه‌ها:</strong> ${currentQuiz.options.join(" - ")}</div><div><strong>پاسخ صحیح:</strong> گزینه ${currentQuiz.correct+1} (${currentQuiz.options[currentQuiz.correct]})</div><div style="margin-top:8px;"><button class="btn-quiz-edit" onclick="editCurrentQuiz()">✏️ ویرایش این سوال</button> <button class="btn-quiz-delete" onclick="deleteCurrentQuiz()">🗑 حذف این سوال</button></div>`; container.innerHTML = html; const responsesDiv = document.getElementById("responsesListAdmin"); if (!responsesDiv) return; const responseEntries = Object.entries(quizResponses); if (responseEntries.length === 0) { responsesDiv.innerHTML = "<p>هنوز هیچ کاربری به این سوال پاسخ نداده است.</p>"; return; } let tableHtml = `<table class="responses-table"><tr><th>نام کاربر</th><th>پاسخ انتخاب شده</th><th>نتیجه</th><th>زمان</th></tr>`; for (const [uid, data] of responseEntries) { const userName = data.name || "ناشناس"; const answerIdx = data.answer; const isCorrect = (answerIdx === currentQuiz.correct); const resultText = isCorrect ? "✅ صحیح" : "❌ غلط"; const answerText = currentQuiz.options[answerIdx] || "نامشخص"; const time = data.timestamp ? new Date(data.timestamp).toLocaleTimeString('fa-IR') : "-"; tableHtml += `<tr><td>${escapeHtml(userName)}</td><td>${escapeHtml(answerText)}</td><td>${resultText}</td><td>${time}</td></tr>`; } tableHtml += `</table>`; responsesDiv.innerHTML = tableHtml; }
-    function escapeHtml(str) { return str.replace(/[&<>]/g, function(m){ if(m === '&') return '&amp;'; if(m === '<') return '&lt;'; if(m === '>') return '&gt;'; return m;}); }
+    function updateAdminQuizPanel() { const container = document.getElementById("currentQuizInfo"); if (!container) return; if (!currentQuiz) { container.innerHTML = "📭 هیچ سوال فعالی وجود ندارد. با فرم زیر سوال جدید ثبت کنید."; document.getElementById("responsesListAdmin").innerHTML = ""; return; } let html = `<div style="margin-bottom:8px;"><strong>سوال فعال فعلی:</strong> ${currentQuiz.question}</div><div><strong>گزینه‌ها:</strong> ${currentQuiz.options.join(" - ")}</div><div><strong>پاسخ صحیح:</strong> گزینه ${currentQuiz.correct+1} (${currentQuiz.options[currentQuiz.correct]})</div><div style="margin-top:8px;"><button class="btn-quiz-edit" onclick="editCurrentQuiz()">✏️ ویرایش این سوال</button> <button class="btn-quiz-delete" onclick="deleteCurrentQuiz()">🗑 حذف این سوال</button></div>`; container.innerHTML = html; const responsesDiv = document.getElementById("responsesListAdmin"); if (!responsesDiv) return; const responseEntries = Object.entries(quizResponses); if (responseEntries.length === 0) { responsesDiv.innerHTML = "<p>هنوز هیچ کاربری به این سوال پاسخ نداده است.</p>"; return; } let tableHtml = `<table class="responses-table"><tr><th>نام کاربر</th><th>پاسخ انتخاب شده</th><th>نتیجه</th><th>زمان</th></tr>`; for (const [uid, data] of responseEntries) { const userName = data.name || "ناشناس"; const answerIdx = data.answer; const isCorrect = (answerIdx === currentQuiz.correct); const resultText = isCorrect ? "✅ صحیح" : "❌ غلط"; const answerText = currentQuiz.options[answerIdx] || "نامشخص"; const time = data.timestamp ? new Date(data.timestamp).toLocaleTimeString('fa-IR') : "-"; tableHtml += `<tr><td>${userName}</td><td>${answerText}</td><td>${resultText}</td><td>${time}</td></tr>`; } tableHtml += `</table>`; responsesDiv.innerHTML = tableHtml; }
     function editCurrentQuiz() { if (!currentQuiz) { alert("هیچ سوال فعالی برای ویرایش وجود ندارد."); return; } document.getElementById("quizQuestion").value = currentQuiz.question; if (currentQuiz.options.length >= 4) { document.getElementById("quizOption1").value = currentQuiz.options[0]; document.getElementById("quizOption2").value = currentQuiz.options[1]; document.getElementById("quizOption3").value = currentQuiz.options[2]; document.getElementById("quizOption4").value = currentQuiz.options[3]; } document.getElementById("quizCorrect").value = currentQuiz.correct; const saveBtn = document.querySelector(".admin-quiz-panel .submit-news"); saveBtn.innerText = "✏️ به‌روزرسانی سوال"; saveBtn.setAttribute("onclick", "updateCurrentQuiz()"); alert("اکنون می‌توانید تغییرات را اعمال کرده و روی «به‌روزرسانی سوال» کلیک کنید."); }
-    function updateCurrentQuiz() { if (currentUser !== "admin") { alert("فقط مدیر می‌تواند سوال را ویرایش کند."); return; } const qText = document.getElementById("quizQuestion").value.trim(); const opt1 = document.getElementById("quizOption1").value.trim(); const opt2 = document.getElementById("quizOption2").value.trim(); const opt3 = document.getElementById("quizOption3").value.trim(); const opt4 = document.getElementById("quizOption4").value.trim(); const correctIdx = parseInt(document.getElementById("quizCorrect").value); if (!qText || !opt1 || !opt2 || !opt3 || !opt4 || isNaN(correctIdx)) { alert("لطفاً سوال، چهار گزینه و گزینه صحیح را پر کنید."); return; } const expiryTimestamp = Date.now() + (24 * 60 * 60 * 1000); currentQuiz = { question: qText, options: [opt1, opt2, opt3, opt4], correct: correctIdx, expiryTimestamp: expiryTimestamp, createdAt: Date.now() }; quizResponses = {}; saveQuizToLocal(); alert("سوال با موفقیت به‌روزرسانی شد. زمان انقضا تمدید شد و پاسخ‌های قبلی پاک گردید."); resetQuizForm(); if (isLoggedIn) renderQuiz(); updateAdminQuizPanel(); updateAdminQuizStats(); }
-    function deleteCurrentQuiz() { if (currentUser !== "admin") { alert("فقط مدیر می‌تواند سوال را حذف کند."); return; } if (!currentQuiz) { alert("هیچ سوال فعالی برای حذف وجود ندارد."); return; } if (confirm("آیا از حذف سوال روز جاری اطمینان دارید؟ پاسخ‌های کاربران نیز پاک خواهند شد.")) { currentQuiz = null; quizResponses = {}; saveQuizToLocal(); alert("سوال روز حذف شد."); resetQuizForm(); if (isLoggedIn) renderQuiz(); updateAdminQuizPanel(); updateAdminQuizStats(); } }
+    function updateCurrentQuiz() { if (currentUser !== "admin") { alert("فقط مدیر می‌تواند سوال را ویرایش کند."); return; } const qText = document.getElementById("quizQuestion").value.trim(); const opt1 = document.getElementById("quizOption1").value.trim(); const opt2 = document.getElementById("quizOption2").value.trim(); const opt3 = document.getElementById("quizOption3").value.trim(); const opt4 = document.getElementById("quizOption4").value.trim(); const correctIdx = parseInt(document.getElementById("quizCorrect").value); if (!qText || !opt1 || !opt2 || !opt3 || !opt4 || isNaN(correctIdx)) { alert("لطفاً سوال، چهار گزینه و گزینه صحیح را پر کنید."); return; } const expiryTimestamp = Date.now() + (24 * 60 * 60 * 1000); currentQuiz = { question: qText, options: [opt1, opt2, opt3, opt4], correct: correctIdx, expiryTimestamp: expiryTimestamp, createdAt: Date.now() }; quizResponses = {}; saveQuizToLocal(); alert("سوال با موفقیت به‌روزرسانی شد."); resetQuizForm(); if (isLoggedIn) renderQuiz(); updateAdminQuizPanel(); updateAdminQuizStats(); }
+    function deleteCurrentQuiz() { if (currentUser !== "admin") { alert("فقط مدیر می‌تواند سوال را حذف کند."); return; } if (!currentQuiz) { alert("هیچ سوال فعالی برای حذف وجود ندارد."); return; } if (confirm("آیا از حذف سوال روز جاری اطمینان دارید؟")) { currentQuiz = null; quizResponses = {}; saveQuizToLocal(); alert("سوال روز حذف شد."); resetQuizForm(); if (isLoggedIn) renderQuiz(); updateAdminQuizPanel(); updateAdminQuizStats(); } }
     function resetQuizForm() { document.getElementById("quizQuestion").value = ""; document.getElementById("quizOption1").value = ""; document.getElementById("quizOption2").value = ""; document.getElementById("quizOption3").value = ""; document.getElementById("quizOption4").value = ""; document.getElementById("quizCorrect").value = "0"; const saveBtn = document.querySelector(".admin-quiz-panel .submit-news"); saveBtn.innerText = "ثبت سوال جدید"; saveBtn.setAttribute("onclick", "saveQuiz()"); }
-    function saveQuiz() { if (currentUser !== "admin") { alert("فقط مدیر می‌تواند سوال روز را ثبت کند."); return; } const qText = document.getElementById("quizQuestion").value.trim(); const opt1 = document.getElementById("quizOption1").value.trim(); const opt2 = document.getEl
+    function saveQuiz() { if (currentUser !== "admin") { alert("فقط مدیر می‌تواند سوال روز را ثبت کند."); return; } const qText = document.getElementById("quizQuestion").value.trim(); const opt1 = document.getElementById("quizOption1").value.trim(); const opt2 = document.getElementById("quizOption2").value.trim(); const opt3 = document.getElementById("quizOption3").value.trim(); const opt4 = document.getElementById("quizOption4").value.trim(); const correctIdx = parseInt(document.getElementById("quizCorrect").value); if (!qText || !opt1 || !opt2 || !opt3 || !opt4 || isNaN(correctIdx)) { alert("لطفاً سوال، چهار گزینه و گزینه صحیح را پر کنید."); return; } const expiryTimestamp = Date.now() + (24 * 60 * 60 * 1000); currentQuiz = { question: qText, options: [opt1, opt2, opt3, opt4], correct: correctIdx, expiryTimestamp: expiryTimestamp, createdAt: Date.now() }; quizResponses = {}; saveQuizToLocal(); alert("سوال روز با موفقیت ثبت شد. ۲۴ ساعت معتبر خواهد بود."); if (isLoggedIn) renderQuiz(); updateAdminQuizPanel(); updateAdminQuizStats(); resetQuizForm(); }
+    function renderQuiz() { const container = document.getElementById("quizContainer"); if (!container) return; if (!isLoggedIn) return; if (!currentQuiz) { container.style.display = "none"; return; } const userId = getUserId(); const userResponse = quizResponses[userId]; const hasAnswered = (userResponse !== undefined); let html = `<div class="quiz-card"><div class="quiz-question">❓ سوال روز: ${currentQuiz.question}</div>`; if (!hasAnswered) { html += `<form id="quizForm">`; currentQuiz.options.forEach((opt, idx) => { html += `<div class="quiz-option"><input type="radio" name="quizAnswer" value="${idx}" id="qopt${idx}"><label for="qopt${idx}">${opt}</label></div>`; }); html += `<button type="button" class="quiz-btn" onclick="submitQuizAnswer()">📝 ثبت پاسخ</button></form><div id="quizFeedback" class="quiz-feedback"></div>`; } else { const isCorrect = (userResponse.answer === currentQuiz.correct); html += `<div class="quiz-feedback">`; if (isCorrect) { html += `✅ پاسخ شما صحیح بود! تبریک می‌گوییم. 🎉`; } else { const correctText = currentQuiz.options[currentQuiz.correct]; html += `❌ پاسخ شما نادرست بود. پاسخ صحیح: "${correctText}". دفعه بعد بهتر بیا! 💪`; } html += `</div>`; const total = Object.keys(quizResponses).length; const correctCount = Object.values(quizResponses).filter(r => r.answer === currentQuiz.correct).length; html += `<div class="quiz-stats">📊 تا الان ${total} نفر پاسخ داده‌اند، ${correctCount} پاسخ صحیح (${total>0?((correctCount/total)*100).toFixed(0):0}%).</div>`; } html += `</div>`; container.innerHTML = html; container.style.display = "block"; }
+    function submitQuizAnswer() { if (!currentQuiz) { alert("سوال روز فعال نیست."); return; } const selected = document.querySelector('input[name="quizAnswer"]:checked'); if (!selected) { alert("لطفاً یکی از گزینه‌ها را انتخاب کنید."); return; } const answerIdx = parseInt(selected.value); const userId = getUserId(); if (quizResponses[userId]) { alert("شما قبلاً به این سوال پاسخ داده‌اید."); return; } const userName = getUserName(); quizResponses[userId] = { name: userName, answer: answerIdx, timestamp: Date.now() }; saveQuizToLocal(); renderQuiz(); if (currentUser === "admin") { updateAdminQuizPanel(); updateAdminQuizStats(); } }
+    function updateAdminQuizStats() { const statsDiv = document.getElementById("quizStatsAdmin"); if (!statsDiv) return; if (!currentQuiz) { statsDiv.innerHTML = "هیچ سوال فعالی وجود ندارد."; return; } const total = Object.keys(quizResponses).length; const correctCount = Object.values(quizResponses).filter(r => r.answer === currentQuiz.correct).length; statsDiv.innerHTML = `📈 آمار سوال جاری: ${total} پاسخ، ${correctCount} پاسخ صحیح (${total>0?((correctCount/total)*100).toFixed(1):0}%)`; }
+
+    // -------------------- مدیریت اخبار (افزودن، ویرایش، حذف) --------------------
+    let currentUser = "guest";
+    let isLoggedIn = false;
+    let currentTeamFilter = "barca";
+    let editingNewsId = null;
+    let selectedImageBase64 = "";
+
+    function saveToLocal() { localStorage.setItem("footballNews", JSON.stringify(newsData)); }
+    function loadFromLocal() { let stored = localStorage.getItem("footballNews"); if (stored) newsData = JSON.parse(stored); else saveToLocal(); }
+    function toggleNewsVisibility() { const teamTabs = document.getElementById("teamTabs"); const newsListDiv = document.getElementById("newsList"); const loginMsgDiv = document.getElementById("loginMsg"); const quizDiv = document.getElementById("quizContainer"); if (isLoggedIn) { teamTabs.style.display = "flex"; newsListDiv.style.display = "flex"; loginMsgDiv.style.display = "none"; renderQuiz(); renderNews(); updateWelcomeMessage(); } else { teamTabs.style.display = "none"; newsListDiv.style.display = "none"; loginMsgDiv.style.display = "block"; if (quizDiv) quizDiv.style.display = "none"; } }
+    function renderNews() { if (!isLoggedIn) return; const container = document.getElementById("newsList"); if (!container) return; const filtered = newsData.filter(item => item.team === currentTeamFilter); if (filtered.length === 0) { container.innerHTML = "<div style='background:white;padding:20px;border-radius:20px'>❌ خبری برای این بخش وجود ندارد. مدیر وارد شود و خبر اضافه کند.</div>"; return; } let html = ""; filtered.forEach(news => { let borderClass = (news.team === "barca") ? "barca" : (news.team === "real" ? "real" : "world"); html += `<div class="news-summary-card ${borderClass}"><div class="news-title">📌 ${news.title}</div><div class="news-summary-text">${news.summary}</div><div class="news-meta"><span>📅 ${news.date}</span><div style="display:flex; gap:8px;"><button class="btn-detail" onclick='showDetail(${JSON.stringify(news)})'>مشاهده جزئیات</button>${currentUser === "admin" ? `<button class="btn-edit" onclick="editNews(${news.id})">✏️ ویرایش</button><button class="btn-delete" onclick="deleteNews(${news.id})">🗑 حذف</button>` : ""}</div></div></div>`; }); container.innerHTML = html; }
+    function editNews(id) { const news = newsData.find(n => n.id === id); if (!news) return; editingNewsId = id; document.getElementById("newsTitle").value = news.title; document.getElementById("newsSummary").value = news.summary; document.getElementById("newsFullText").value = news.fullText; document.getElementById("newsTeam").value = news.team; document.getElementById("newsDate").value = news.date; document.getElementById("imagePreview").innerHTML = "📸 عکس فعلی حفظ خواهد شد."; const submitBtn = document.querySelector(".admin-panel .submit-news"); submitBtn.innerText = "✏️ به‌روزرسانی خبر"; submitBtn.setAttribute("onclick", "updateNews()"); }
+    function updateNews() { if (currentUser !== "admin") return; if (!editingNewsId) return; const title = document.getElementById("newsTitle").value.trim(); const summary = document.getElementById("newsSummary").value.trim(); const fullText = document.getElementById("newsFullText").value.trim(); const team = document.getElementById("newsTeam").value; const date = document.getElementById("newsDate").value.trim(); if (!title || !summary || !fullText || !date) { alert("لطفاً تمام فیلدها را پر کنید."); return; } let image = newsData.find(n => n.id === editingNewsId).image; if (selectedImageBase64) image = selectedImageBase64; const index = newsData.findIndex(n => n.id === editingNewsId); if (index !== -1) { newsData[index] = { ...newsData[index], title, summary, fullText, team, date, image }; saveToLocal(); alert("خبر ویرایش شد."); } resetNewsForm(); renderNews(); }
+    function resetNewsForm() { document.getElementById("newsTitle").value = ""; document.getElementById("newsSummary").value = ""; document.getElementById("newsFullText").value = ""; document.getElementById("newsDate").value = ""; document.getElementById("newsImageFile").value = ""; selectedImageBase64 = ""; document.getElementById("imagePreview").innerHTML = ""; editingNewsId = null; const submitBtn = document.querySelector(".admin-panel .submit-news"); submitBtn.innerText = "ثبت خبر"; submitBtn.setAttribute("onclick", "addNews()"); }
+    function showDetail(news) { document.getElementById("detailTitle").innerText = news.title; document.getElementById("detailDate").innerText = news.date; let imgSrc = news.image || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400' viewBox='0 0 600 400'%3E%3Crect width='600' height='400' fill='%23cccccc'/%3E%3Ctext x='50%25' y='50%25' fill='%23333' text-anchor='middle' dy='.3em'%3Eبدون عکس%3C/text%3E%3C/svg%3E"; document.getElementById("detailImage").src = imgSrc; document.getElementById("detailFullText").innerText = news.fullText; document.getElementById("detailModal").style.visibility = "visible"; }
+    function closeDetail() { document.getElementById("detailModal").style.visibility = "hidden"; }
+    function deleteNews(id) { if (currentUser !== "admin") { alert("فقط مدیر می‌تواند خبر حذف کند."); return; } if (confirm("آیا از حذف این خبر اطمینان دارید؟")) { newsData = newsData.filter(item => item.id !== id); saveToLocal(); renderNews(); alert("خبر حذف شد."); } }
+    document.getElementById("newsImageFile").addEventListener("change", function(e) { const file = e.target.files[0]; if (file) { const reader = new FileReader(); reader.onload = function(ev) { selectedImageBase64 = ev.target.result; document.getElementById("imagePreview").innerHTML = "✅ عکس جدید انتخاب شد."; }; reader.readAsDataURL(file); } else { selectedImageBase64 = ""; document.getElementById("imagePreview").innerHTML = ""; } });
+    function addNews() { if (currentUser !== "admin") { alert("فقط مدیر می‌تواند خبر اضافه کند."); return; } let title = document.getElementById("newsTitle").value.trim(); let summary = document.getElementById("newsSummary").value.trim(); let fullText = document.getElementById("newsFullText").value.trim(); let team = document.getElementById("newsTeam").value; let date = document.getElementById("newsDate").value.trim(); let image = selectedImageBase64; if (!title || !summary || !fullText || !date) { alert("لطفاً تمام فیلدها را پر کنید."); return; } if (!image) { let defaultColor = team === "barca" ? "004d98" : (team === "real" ? "9c2e2e" : "2e7d32"); image = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400' viewBox='0 0 600 400'%3E%3Crect width='600' height='400' fill='%23${defaultColor}'/%3E%3Ctext x='50%25' y='50%25' font-size='24' fill='white' text-anchor='middle' dy='.3em'%3E${encodeURIComponent(title.substring(0,20))}%3C/text%3E%3C/svg%3E`; } let newId = Date.now(); let newNews = { id: newId, title, summary, fullText, image, team, date }; newsData.unshift(newNews); saveToLocal(); renderNews(); resetNewsForm(); alert("خبر اضافه شد."); }
+
+    // -------------------- ورود با رمزهای Base64 (امنیت نسبی) --------------------
+    function login() {
+        let pass = document.getElementById("loginPass").value;
+        let encodedPass = btoa(pass); // تبدیل به Base64
+        
+        if (encodedPass === "YWRtaW5AYmFyY2EyMDI2") { // admin@barca2026
+            currentUser = "admin";
+            isLoggedIn = true;
+            document.getElementById("userStatus").innerHTML = "👑 مدیر (امکان افزودن، ویرایش و حذف خبر و آزمون)";
+            document.getElementById("userStatus").className = "user-status admin";
+            document.getElementById("adminPanel").style.display = "block";
+            alert("ورود مدیر موفق ✅");
+        } else if (encodedPass === "Z3Vlc3QyMDI2") { // guest2026
+            currentUser = "guest";
+            isLoggedIn = true;
+            document.getElementById("userStatus").innerHTML = "👤 مهمان (فقط مشاهده)";
+            document.getElementById("userStatus").className = "user-status guest";
+            document.getElementById("adminPanel").style.display = "none";
+            alert("ورود موفق ✅");
+        } else {
+            alert("رمز اشتباه است! رمز در کانال اعلام شده است.");
+            return;
+        }
+        document.getElementById("loginPass").value = "";
+        toggleNewsVisibility();
+        if (currentUser === "admin") {
+            updateAdminQuizPanel();
+            updateAdminQuizStats();
+        }
+    }
+
+    function logout() {
+        currentUser = "guest";
+        isLoggedIn = false;
+        document.getElementById("userStatus").innerHTML = "👤 مهمان (فقط مشاهده)";
+        document.getElementById("userStatus").className = "user-status guest";
+        document.getElementById("adminPanel").style.display = "none";
+        toggleNewsVisibility();
+        alert("شما خارج شدید.");
+    }
+
+    function initTabs() {
+        const btns = document.querySelectorAll(".tab-btn");
+        btns.forEach(btn => {
+            btn.addEventListener("click", () => {
+                btns.forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+                currentTeamFilter = btn.getAttribute("data-team");
+                if (isLoggedIn) renderNews();
+            });
+        });
+    }
+
+    // راه‌اندازی اولیه
+    loadFromLocal();
+    loadQuiz();
+    initTabs();
+    isLoggedIn = false;
+    currentUser = "guest";
+    toggleNewsVisibility();
+    document.getElementById("adminPanel").style.display = "none";
+    document.getElementById("detailModal").addEventListener("click", function(e) {
+        if (e.target === this) closeDetail();
+    });
+</script>
+
+</body>
+</html>
